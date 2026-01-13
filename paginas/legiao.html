@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Legião Urbana | Paloma</title>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-sky: #080c11;
+            --accent-blue: #4facfe;
+            --text-silver: #c0c5ce;
+            --glass: rgba(255, 255, 255, 0.02);
+            --border: rgba(79, 172, 254, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-sky);
+            color: var(--text-silver);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background 0.5s;
+        }
+
+        /* --- EFEITO ATMOSFÉRICO --- */
+        #bg-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #102030 0%, #080c11 100%);
+        }
+
+        .music-note {
+            position: absolute;
+            color: var(--accent-blue);
+            font-size: 20px;
+            opacity: 0;
+            pointer-events: none;
+            animation: floatNote 6s infinite linear;
+        }
+
+        @keyframes floatNote {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.4;
+            }
+
+            80% {
+                opacity: 0.2;
+            }
+
+            100% {
+                transform: translateY(-10vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        /* Equalizador Adaptável */
+        .equalizer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            /* Menor no mobile */
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            opacity: 0.15;
+            z-index: -1;
+            padding: 0 5px;
+        }
+
+        @media (min-width: 768px) {
+            .equalizer {
+                height: 100px;
+                padding: 0 10px;
+            }
+        }
+
+        .bar {
+            width: 2px;
+            background: var(--accent-blue);
+            animation: equalize 1.2s infinite ease-in-out;
+        }
+
+        @media (min-width: 768px) {
+            .bar {
+                width: 3px;
+            }
+        }
+
+        @keyframes equalize {
+
+            0%,
+            100% {
+                height: 5px;
+            }
+
+            50% {
+                height: 40px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            @keyframes equalize {
+
+                0%,
+                100% {
+                    height: 10px;
+                }
+
+                50% {
+                    height: 80px;
+                }
+            }
+        }
+
+        /* Botão Play Responsivo */
+        .play-bday {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-blue);
+            background: transparent;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: 0.4s;
+        }
+
+        @media (min-width: 768px) {
+            .play-bday {
+                width: 80px;
+                height: 80px;
+                margin: 40px auto;
+            }
+        }
+
+        .play-bday::before {
+            content: "";
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 20px solid var(--accent-blue);
+            margin-left: 5px;
+        }
+
+        /* Botão Voltar */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+            z-index: 100;
+            background: rgba(8, 12, 17, 0.7);
+            backdrop-filter: blur(5px);
+            /* Transição para o scroll dinâmico */
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        /* Classe para esconder o botão no scroll */
+        .back-btn.scrolled {
+            transform: translateY(-80px);
+            opacity: 0;
+        }
+
+        @media (min-width: 768px) {
+            .back-btn {
+                top: 30px;
+                left: 30px;
+                font-size: 0.7rem;
+                letter-spacing: 4px;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 60px auto 20px;
+            padding: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                margin: 80px auto;
+                padding: 40px 20px;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            header {
+                margin-bottom: 80px;
+                padding-bottom: 30px;
+            }
+        }
+
+        .main-title {
+            font-family: 'Special Elite', cursive;
+            font-size: clamp(2rem, 10vw, 4.5rem);
+            color: #fff;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        .bday-tag {
+            font-size: 0.6rem;
+            letter-spacing: 5px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+        }
+
+        @media (min-width: 768px) {
+            .bday-tag {
+                font-size: 0.7rem;
+                letter-spacing: 10px;
+            }
+        }
+
+        /* --- LYRIC CARD RESPONSIVO --- */
+        .lyric-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 30px 20px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        @media (min-width: 768px) {
+            .lyric-card {
+                padding: 60px 45px;
+                box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        .letter-content {
+            font-size: clamp(1rem, 4vw, 1.15rem);
+            color: rgba(255, 255, 255, 0.85);
+            text-align: justify;
+        }
+
+        .letter-content b {
+            color: var(--accent-blue);
+            font-weight: 400;
+        }
+
+        .verse-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 4px;
+            margin: 30px 0;
+            font-style: italic;
+            border-right: 3px solid var(--accent-blue);
+            font-family: 'Special Elite', cursive;
+            color: #fff;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        @media (min-width: 768px) {
+            .verse-box {
+                padding: 30px;
+                margin: 40px 0;
+                font-size: 1.1rem;
+            }
+        }
+
+        .signature {
+            margin-top: 40px;
+            text-align: center;
+            font-family: 'Special Elite', cursive;
+        }
+
+        @media (min-width: 768px) {
+            .signature {
+                margin-top: 60px;
+            }
+        }
+
+        .signature h2 {
+            font-size: clamp(1.4rem, 6vw, 1.8rem);
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 30px;
+            opacity: 0.2;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+        }
+
+        @media (min-width: 768px) {
+            footer {
+                letter-spacing: 6px;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Efeito de Flash */
+        .flash {
+            animation: blueFlash 0.5s ease-out;
+        }
+
+        @keyframes blueFlash {
+            0% {
+                background-color: rgba(79, 172, 254, 0.4);
+            }
+
+            100% {
+                background-color: var(--bg-sky);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bg-effect"></div>
+    <div class="equalizer" id="equalizer"></div>
+
+    <a href="../index.html" class="back-btn" id="backBtn">← SUMÁRIO</a>
+
+    <div class="container">
+        <header>
+            <h1 class="main-title">Legião Urbana</h1>
+            <div class="bday-tag">Edição Especial: Paloma</div>
+        </header>
+
+        <main class="lyric-card">
+            <div class="letter-content">
+                <p>Paloma, hoje eu percebi <b>como sua amizade é importante</b>. Olho para você e vejo alguém que não
+                    precisa provar nada pra ninguém, que entende que <b>o infinito é realmente um dos deuses mais
+                        lindos</b> e que sabe ver o que quase ninguém vê.</p>
+
+                <div class="verse-box">
+                    "Sou tão tranquilo e tão contente...<br>
+                    Já não me preocupo se eu não sei por quê.<br>
+                    Às vezes, o que eu vejo, quase ninguém vê."
+                </div>
+
+                <p>Neste seu novo ciclo, lembre-se que <b>temos nosso próprio tempo</b>. Não tenha medo do escuro nem
+                    das tempestades da cor de olhos castanhos, pois <b>somos tão jovens</b> e, quando tudo parece
+                    perdido, <b>sempre existe uma luz e um caminho</b>.</p>
+
+                <p>Você é <b>metal, raio, relâmpago e trovão</b>. Uma alma que <b>não aprendeu a se render</b> e que
+                    sabe que a virtude está em outras mãos, mas o tesouro está guardado dentro de você. Mesmo nos dias
+                    desleais, você é <b>o ouro em seu brasão</b>.</p>
+
+                <div class="verse-box">
+                    "Teremos coisas bonitas pra contar.<br>
+                    E até lá vamos viver,<br>
+                    Temos muito ainda por fazer.<br>
+                    Apenas começamos."
+                </div>
+
+                <p>Obrigado por pensar em mim. Que a sua história nunca seja escrita pelo avesso e que você siga sempre
+                    em frente, porque <b>não temos tempo a perder</b>. O mundo começa agora.</p>
+
+                <div class="play-bday" id="bdayBtn" title="Aumente o som!"></div>
+
+                <div class="signature">
+                    <h2 id="bdayTitle">Feliz Aniversário!</h2>
+                    <p style="font-size: 0.9rem; opacity: 0.7;">Sempre em frente, Polaris.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>O UNIVERSO DA PALOMA • 2026</footer>
+    </div>
+
+    <script>
+        const bg = document.getElementById('bg-effect');
+        const eq = document.getElementById('equalizer');
+        const bdayBtn = document.getElementById('bdayBtn');
+        const backBtn = document.getElementById('backBtn');
+        const bars = [];
+
+        // --- LÓGICA DE SCROLL DINÂMICO ---
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                // Rolar para baixo - Esconde
+                backBtn.classList.add('scrolled');
+            } else {
+                // Rolar para cima - Mostra
+                backBtn.classList.remove('scrolled');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        // Quantidade de barras baseada na largura da tela
+        const barCount = window.innerWidth < 768 ? 25 : 50;
+
+        for (let i = 0; i < barCount; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.animationDelay = `${Math.random() * 2}s`;
+            eq.appendChild(bar);
+            bars.push(bar);
+        }
+
+        bdayBtn.addEventListener('click', (e) => {
+            document.body.classList.add('flash');
+            setTimeout(() => document.body.classList.remove('flash'), 500);
+
+            bars.forEach(bar => {
+                bar.style.animationDuration = '0.3s';
+                bar.style.background = '#fff';
+                setTimeout(() => {
+                    bar.style.animationDuration = '1.2s';
+                    bar.style.background = 'var(--accent-blue)';
+                }, 3000);
+            });
+
+            const title = document.getElementById('bdayTitle');
+            const originalText = title.innerText;
+            title.innerText = "VIVA A PALOMA! 🤘";
+            title.style.textShadow = "0 0 20px var(--accent-blue)";
+
+            setTimeout(() => {
+                title.innerText = originalText;
+                title.style.textShadow = "none";
+            }, 3000);
+        });
+
+        // Notas musicais (menos frequentes no mobile)
+        const noteInterval = window.innerWidth < 768 ? 1200 : 800;
+
+        function createNote() {
+            const notes = ['♪', '♫', '♬', '♩'];
+            const note = document.createElement('div');
+            note.className = 'music-note';
+            note.innerText = notes[Math.floor(Math.random() * notes.length)];
+            note.style.left = Math.random() * 100 + 'vw';
+            note.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            bg.appendChild(note);
+            setTimeout(() => note.remove(), 6000);
+        }
+        setInterval(createNote, noteInterval);
+
+        // Parallax apenas em dispositivos com mouse
+        if (window.matchMedia("(pointer: fine)").matches) {
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                bg.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, #162a3d 0%, #080c11 100%)`;
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Paloma | A Garota em Chamas</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #060301;
+            --fire-color: #ff4500;
+            --gold-burn: #f1c40f;
+            --text-color: #f0f0f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: default;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Ruído de Filme e Vinheta */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url(https://www.transparenttextures.com/patterns/stardust.png);
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .overlay-vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: radial-gradient(circle, transparent 20%, var(--bg-color) 95%);
+            pointer-events: none;
+        }
+
+        #fire-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            filter: blur(20px);
+            opacity: 0.4;
+        }
+
+        /* NAVIGATION - RESPONSIVA */
+        .nav-top {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        @media (min-width: 768px) {
+            .nav-top {
+                top: 40px;
+                padding: 0 50px;
+            }
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--gold-burn);
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            padding: 8px 15px;
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            transition: 0.4s;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        @media (min-width: 768px) {
+            .back-link {
+                font-size: 0.7rem;
+                letter-spacing: 4px;
+                padding: 10px 20px;
+            }
+        }
+
+        .back-link:hover {
+            background: var(--gold-burn);
+            color: #000;
+            box-shadow: 0 0 20px var(--fire-color);
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+        .main-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 20px 60px;
+            text-align: center;
+        }
+
+        .distrito-tag {
+            font-family: 'Cinzel', serif;
+            color: var(--fire-color);
+            letter-spacing: 6px;
+            font-size: 0.7rem;
+            display: block;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @media (min-width: 768px) {
+            .distrito-tag {
+                letter-spacing: 12px;
+                font-size: 0.8rem;
+                margin-bottom: 20px;
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.02);
+            }
+        }
+
+        .main-h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.2rem, 10vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #fff 0%, var(--gold-burn) 40%, var(--fire-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.4));
+            margin-bottom: 10px;
+        }
+
+        .story-block {
+            margin-top: 30px;
+            background: rgba(10, 5, 2, 0.6);
+            border: 1px solid rgba(255, 69, 0, 0.1);
+            padding: 40px 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: 0.5s;
+            border-radius: 4px;
+        }
+
+        @media (min-width: 768px) {
+            .story-block {
+                margin-top: 50px;
+                padding: 60px 40px;
+            }
+        }
+
+        .quote-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.4rem, 5vw, 2.5rem);
+            font-style: italic;
+            color: #fff;
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .body-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.1rem, 4vw, 1.4rem);
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            text-align: justify;
+        }
+
+        .body-text b {
+            color: var(--gold-burn);
+        }
+
+        /* TORDO E MENSAGEM */
+        .tordo-container {
+            margin-top: 40px;
+            position: relative;
+        }
+
+        .tordo-btn {
+            font-size: clamp(3.5rem, 15vw, 5rem);
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+            filter: drop-shadow(0 0 10px var(--fire-color));
+            user-select: none;
+        }
+
+        .tordo-btn:active {
+            transform: scale(0.9);
+        }
+
+        .bday-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            text-align: center;
+            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            width: 90%;
+        }
+
+        .bday-overlay.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .bday-overlay h2 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.5rem, 12vw, 6rem);
+            color: var(--gold-burn);
+            text-shadow: 0 0 20px var(--fire-color), 0 0 40px var(--fire-color);
+        }
+
+        .spark {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 1000;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding: 30px 0;
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--gold-burn);
+            opacity: 0.5;
+        }
+
+        @media (min-width: 768px) {
+            footer {
+                margin-top: 80px;
+                font-size: 0.7rem;
+                letter-spacing: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="overlay-vignette"></div>
+    <canvas id="fire-canvas"></canvas>
+
+    <div class="nav-top">
+        <a href="../index.html" class="back-link">← VOLTAR</a>
+        <span style="font-family: 'Cinzel'; font-size: 0.6rem; letter-spacing: 3px; color: var(--gold-burn);">DISTRITO
+            12</span>
+    </div>
+
+    <div class="main-content">
+        <header class="header-title">
+            <span class="distrito-tag">A Esperança é mais forte que o medo</span>
+            <h1 class="main-h1">A Garota<br>em Chamas</h1>
+        </header>
+
+        <article class="story-block">
+            <p class="quote-text">"Paloma, você é a faísca que não se apaga."</p>
+            <div class="body-text">
+                <p>Assim como Katniss, você carrega uma força que o mundo às vezes não entende de primeira. Hoje
+                    celebramos mais um ciclo da <b>sua própria revolução pessoal</b>.</p>
+                <br>
+                <p>Nesse seu aniversário, que a sorte esteja sempre ao seu favor. Que você continue sendo essa garota em
+                    chamas: cheia de garra, corajosa e dona de uma luz que aquece todos ao seu redor.</p>
+                <br>
+                <p style="text-align: center;"><b>Feliz Aniversário, Paloma!</b><br>O mundo é o seu Panem, e você já
+                    venceu os jogos.</p>
+            </div>
+
+            <div class="tordo-container">
+                <div class="tordo-btn" id="tordo">🏹</div>
+            </div>
+        </article>
+
+        <footer>O UNIVERSO DA PALOMA 2026</footer>
+    </div>
+
+    <div class="bday-overlay" id="bdayOverlay">
+        <p style="font-family: 'Cinzel'; letter-spacing: 5px; color: #fff; font-size: 0.8rem; margin-bottom: 10px;">
+            FELIZ ANIVERSÁRIO</p>
+        <h2>PALOMA</h2>
+    </div>
+
+    <script>
+        // --- ANIMAÇÃO DE FOGO ---
+        const canvas = document.getElementById('fire-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 100;
+                this.size = Math.random() * (window.innerWidth < 768 ? 40 : 60) + 20;
+                this.speedY = Math.random() * 0.5 + 0.2;
+                this.color = Math.random() > 0.5 ? '#ff4500' : '#3d0a0a';
+                this.opacity = Math.random() * 0.3;
+            }
+            update() {
+                this.y -= this.speedY;
+                if (this.y < -100) this.reset();
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const particleCount = window.innerWidth < 768 ? 15 : 30;
+        for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // --- CLIQUE NO TORDO ---
+        const tordo = document.getElementById('tordo');
+        const bdayOverlay = document.getElementById('bdayOverlay');
+
+        tordo.addEventListener('click', (e) => {
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+            for (let i = 0; i < 40; i++) {
+                createSpark(clientX || window.innerWidth / 2, clientY || window.innerHeight / 2);
+            }
+
+            bdayOverlay.classList.add('active');
+            const story = document.querySelector('.story-block');
+            story.style.transform = 'scale(0.95)';
+            story.style.opacity = '0.3';
+
+            setTimeout(() => {
+                bdayOverlay.classList.remove('active');
+                story.style.transform = 'scale(1)';
+                story.style.opacity = '1';
+            }, 4000);
+        });
+
+        function createSpark(x, y) {
+            const spark = document.createElement('div');
+            spark.className = 'spark';
+            const size = Math.random() * 5 + 2;
+            spark.style.width = size + 'px';
+            spark.style.height = size + 'px';
+            spark.style.left = x + 'px';
+            spark.style.top = y + 'px';
+            const color = Math.random() > 0.5 ? '#f1c40f' : '#ff4500';
+            spark.style.backgroundColor = color;
+            spark.style.boxShadow = `0 0 10px ${color}`;
+            document.body.appendChild(spark);
+
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * (window.innerWidth < 768 ? 150 : 250) + 50;
+
+            spark.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                { transform: `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity}px) scale(0)`, opacity: 0 }
+            ], {
+                duration: 1200,
+                easing: 'cubic-bezier(0, .9, .5, 1)'
+            }).onfinish = () => spark.remove();
+        }
+    </script>
+</body>
+
+</html>

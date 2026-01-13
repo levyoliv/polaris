@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polaris | O Centro do Universo de Paloma</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Dancing+Script:wght@600&family=Poppins:wght@200;300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --space-black: #030105;
+            --nebula-purple: #1a0b2e;
+            --polaris-glow: #d4a5ff;
+            --accent-cyan: #a5f3ff;
+            --glass: rgba(15, 10, 25, 0.8);
+        }
+
+        /* --- RESET E BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: var(--space-black);
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            overflow: hidden;
+            /* Impede qualquer rolagem */
+            cursor: crosshair;
+        }
+
+        /* --- CENÁRIO DE FUNDO --- */
+        #universe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            background: radial-gradient(circle at center, var(--nebula-purple) 0%, var(--space-black) 100%);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- LAYOUT PRINCIPAL (CENTRALIZAÇÃO TOTAL) --- */
+        .main-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            padding: clamp(30px, 5vh, 60px);
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            /* Garante que o card nunca saia da tela verticalmente */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 0 80px rgba(180, 120, 255, 0.2);
+            overflow-y: auto;
+            /* Caso o texto seja grande demais em telas minúsculas */
+            scrollbar-width: none;
+            /* Esconde scroll no Firefox */
+        }
+
+        .glass-card::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Esconde scroll no Chrome */
+
+        /* --- ESTRELA POLARIS --- */
+        .star-section {
+            position: relative;
+            margin-bottom: 25px;
+            flex-shrink: 0;
+            /* Impede a estrela de achatar */
+        }
+
+        .polaris-star {
+            font-size: clamp(3rem, 8vh, 5rem);
+            color: white;
+            filter: drop-shadow(0 0 20px var(--polaris-glow));
+            animation: superTwinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes superTwinkle {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.15) rotate(45deg);
+                filter: drop-shadow(0 0 40px var(--accent-cyan));
+                opacity: 0.8;
+            }
+        }
+
+        /* --- TEXTOS ADAPTÁVEIS --- */
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            letter-spacing: clamp(5px, 2vw, 12px);
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, var(--polaris-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .description {
+            font-size: clamp(0.9rem, 2vh, 1.1rem);
+            line-height: 1.6;
+            font-weight: 300;
+            color: rgba(220, 220, 255, 0.9);
+            margin-bottom: 20px;
+            max-width: 500px;
+        }
+
+        .highlight-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.5rem, 4vh, 2.2rem);
+            color: var(--polaris-glow);
+            display: block;
+            margin-top: 15px;
+            text-shadow: 0 0 10px var(--polaris-glow);
+        }
+
+        /* --- BOTÃO --- */
+        .cosmic-btn {
+            background: transparent;
+            border: 1px solid var(--polaris-glow);
+            color: white;
+            padding: 12px 35px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.75rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 10px;
+        }
+
+        .cosmic-btn:hover {
+            background: var(--polaris-glow);
+            color: var(--space-black);
+            box-shadow: 0 0 30px var(--polaris-glow);
+            transform: scale(1.05);
+        }
+
+        /* --- NAVEGAÇÃO --- */
+        .back-link {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: white;
+            letter-spacing: 4px;
+        }
+
+        /* --- PARTÍCULAS --- */
+        .nova-particle {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5000;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 15px;
+            font-size: 0.6rem;
+            letter-spacing: 5px;
+            color: rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="universe">
+        <canvas id="starCanvas"></canvas>
+    </div>
+
+    <div class="main-wrapper">
+        <main class="glass-card">
+            <div class="star-section">
+                <div class="polaris-star">✦</div>
+            </div>
+
+            <h1>Polaris</h1>
+
+            <div class="description">
+                Diferente de todas as outras, a Polaris não gira em torno do céu;
+                <strong>o céu gira em torno dela.</strong>
+                Ela é o ponto fixo imutável no firmamento, a âncora de luz que guia navegantes através de oceanos
+                desconhecidos.
+
+                <span class="highlight-text">
+                    Paloma, você é a nossa Polaris.
+                </span>
+            </div>
+
+            <button class="cosmic-btn" onclick="triggerSupernova(event)">Expandir Universo</button>
+
+            <a href="../index.html" class="back-link">← RETORNAR AO SISTEMA</a>
+        </main>
+
+        <footer>O Universo da Paloma • 2026</footer>
+    </div>
+
+    <script>
+        /** * ENGINE ESTELAR OTIMIZADA
+         */
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            const count = (window.innerWidth * window.innerHeight) / 3000;
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    opacity: Math.random(),
+                    pulse: Math.random() * 0.02
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(s => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                s.opacity += s.pulse;
+                if (s.opacity > 1 || s.opacity < 0.2) s.pulse *= -1;
+            });
+            requestAnimationFrame(draw);
+        }
+
+        function triggerSupernova(e) {
+            const rect = e.target.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 100; i++) {
+                const p = document.createElement('div');
+                p.className = 'nova-particle';
+                const size = Math.random() * 3 + 1;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = centerX + 'px';
+                p.style.top = centerY + 'px';
+                p.style.backgroundColor = ['#fff', '#d4a5ff', '#a5f3ff'][Math.floor(Math.random() * 3)];
+
+                document.body.appendChild(p);
+
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 300 + 50;
+
+                p.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 1000,
+                    easing: 'ease-out'
+                }).onfinish = () => p.remove();
+            }
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        draw();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Polaris | Constelação de Memórias</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #060309;
+            --accent: #d4a5ff;
+            --accent-soft: #ff85a1;
+            --gold: #f1c40f;
+            --text-main: #fff0f5;
+            --text-muted: rgba(255, 240, 245, 0.4);
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #060309 100%);
+            min-height: 100vh;
+        }
+
+        /* --- ELEMENTOS FIXOS --- */
+        #star-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+            z-index: 10001;
+            box-shadow: 0 0 15px var(--accent);
+            transition: width 0.1s ease-out;
+        }
+
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-main);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- HEADER --- */
+        header {
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            perspective: 1000px;
+            padding: 0 20px;
+        }
+
+        header p {
+            letter-spacing: 12px;
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            animation: fadeInDown 1.5s ease;
+        }
+
+        .polaris-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(4rem, 15vw, 10rem);
+            background: linear-gradient(to bottom, #fff 20%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .polaris-title:hover {
+            transform: scale(1.05) rotate(-2deg);
+            filter: drop-shadow(0 0 40px var(--accent));
+        }
+
+        /* --- GRID E CARDS --- */
+        .container {
+            max-width: 1300px;
+            margin: auto;
+            padding: 0 40px 100px;
+            transition: opacity 0.8s ease, filter 0.8s ease;
+        }
+
+        .category-header {
+            margin: 150px 0 60px;
+            text-align: center;
+        }
+
+        .category-header h2 {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 10px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .category-header h2::before,
+        .category-header h2::after {
+            content: '';
+            height: 1px;
+            width: 50px;
+            background: linear-gradient(90deg, transparent, var(--accent));
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 50px;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 15px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease-out, box-shadow 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transform-style: preserve-3d;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            z-index: 10;
+        }
+
+        /* --- BRILHOS INDIVIDUAIS POR TEMA --- */
+        .card:has(.theme-fire):hover {
+            border-color: #ff4500;
+            box-shadow: 0 0 25px rgba(255, 69, 0, 0.3);
+        }
+
+        .card:has(.theme-glam):hover {
+            border-color: #f1c40f;
+            box-shadow: 0 0 25px rgba(241, 196, 15, 0.3);
+        }
+
+        .card:has(.theme-water):hover {
+            border-color: #4facfe;
+            box-shadow: 0 0 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .card:has(.theme-magic):hover {
+            border-color: #d4a5ff;
+            box-shadow: 0 0 25px rgba(212, 165, 255, 0.3);
+        }
+
+        .card:has(.theme-pink):hover {
+            border-color: #ff85a1;
+            box-shadow: 0 0 25px rgba(255, 133, 161, 0.3);
+        }
+
+        .card:has(.theme-arcane):hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 280px;
+            border-radius: 18px;
+            object-fit: cover;
+            filter: grayscale(20%);
+            transition: 0.6s;
+            transform: translateZ(20px);
+        }
+
+        .card:hover .card-img {
+            filter: grayscale(0%);
+        }
+
+        .card-info {
+            padding: 25px 10px 15px;
+            transform: translateZ(30px);
+        }
+
+        .card-info h3 {
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+        }
+
+        .card-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* --- HERO CARD --- */
+        .hero-card {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            min-height: 450px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(212, 165, 255, 0.05) 0%, rgba(255, 133, 161, 0.05) 100%);
+        }
+
+        .hero-card .card-img {
+            width: 50%;
+            height: 400px;
+        }
+
+        .hero-card .card-info {
+            width: 50%;
+            padding-left: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* --- ANIMAÇÕES E TEMAS --- */
+        .animated-title {
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine-move 4s linear infinite;
+        }
+
+        @keyframes shine-move {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 0.8;
+                transform: translateY(0);
+            }
+        }
+
+        .theme-fire {
+            background-image: linear-gradient(90deg, #ff4500, #f1c40f, #ff4500);
+        }
+
+        .theme-glam {
+            background-image: linear-gradient(90deg, #fff, #f1c40f, #fff);
+        }
+
+        .theme-water {
+            background-image: linear-gradient(90deg, #4facfe, #00f2fe, #4facfe);
+        }
+
+        .theme-magic {
+            background-image: linear-gradient(90deg, #d4a5ff, #fff, #d4a5ff);
+        }
+
+        .theme-pink {
+            background-image: linear-gradient(90deg, #ff85a1, #fff, #ff85a1);
+        }
+
+        .theme-arcane {
+            background-image: linear-gradient(90deg, #00ffff, #0088ff, #00ffff);
+        }
+
+        .fade-out {
+            opacity: 0;
+            filter: blur(10px);
+            transition: 0.8s;
+        }
+
+        footer {
+            padding: 80px;
+            text-align: center;
+            opacity: 0.4;
+            letter-spacing: 4px;
+            font-size: 0.7rem;
+        }
+
+        /* --- MEDIA QUERIES (RESPONSIVIDADE) --- */
+        @media (max-width: 900px) {
+            header {
+                height: 60vh;
+            }
+
+            .container {
+                padding: 0 20px 60px;
+            }
+
+            .hero-card {
+                flex-direction: column;
+                min-height: auto;
+                padding: 20px;
+            }
+
+            .hero-card .card-img {
+                width: 100%;
+                height: 300px;
+            }
+
+            .hero-card .card-info {
+                width: 100%;
+                padding: 30px 0 0;
+                text-align: center;
+            }
+
+            .hero-card .card-info h2 {
+                font-size: 2.5rem !important;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .category-header {
+                margin: 80px 0 40px;
+            }
+
+            .category-header h2 {
+                font-size: 1rem;
+                letter-spacing: 6px;
+            }
+
+            .category-header h2::before,
+            .category-header h2::after {
+                width: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header p {
+                letter-spacing: 6px;
+                font-size: 0.6rem;
+            }
+
+            .polaris-title {
+                font-size: 4rem;
+            }
+
+            .card-info h3 {
+                font-size: 1.4rem;
+            }
+
+            footer {
+                padding: 40px 20px;
+            }
+        }
+
+        /* Previne o Tilt 3D em dispositivos Touch para não bugar o scroll */
+        @media (hover: none) {
+            .card:hover {
+                transform: none !important;
+            }
+
+            .polaris-title:hover {
+                transform: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="progress-bar"></div>
+    <div class="transition-overlay" id="overlay"></div>
+    <canvas id="star-canvas"></canvas>
+
+    <header id="main-header">
+        <p>Constelação de Memórias</p>
+        <a href="paginas/estrela-guia.html" class="polaris-title">Polaris</a>
+    </header>
+
+    <div class="container" id="main-container">
+        <a href="paginas/jogosvorazes.html" class="card hero-card">
+            <img src="imagens/jogos_vorazes.jpg" class="card-img" alt="Jogos Vorazes">
+            <div class="card-info">
+                <span
+                    style="color: var(--gold); letter-spacing: 5px; font-size: 0.6rem; margin-bottom: 15px; display: block;">FAVORITO</span>
+                <h2 class="animated-title theme-fire" style="font-size: 4rem;">Jogos Vorazes</h2>
+                <p>A esperança é a única coisa mais forte que o medo.</p>
+            </div>
+        </a>
+
+        <div class="category-header">
+            <h2>Páginas Lidas</h2>
+        </div>
+        <div class="grid">
+            <a href="paginas/evelynhugo.html" class="card">
+                <img src="imagens/evelyn hugo.jpg" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-glam">Evelyn Hugo</h3>
+                    <p>“Eles são só maridos. A Evelyn Hugo sou eu.”</p>
+                </div>
+            </a>
+            <a href="paginas/tudoerio.html" class="card">
+                <img src="imagens/tudoerio.jpg" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-water">Tudo é Rio</h3>
+                    <p>“O amor é alegre, se não é alegre não é amor.”</p>
+                </div>
+            </a>
+            <a href="paginas/poemas.html" class="card">
+                <img src="imagens/poemas.jfif" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-magic">Poemas & Contos</h3>
+                    <p>“A poesia não se entrega a quem a define.”</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="category-header">
+            <h2>Frequências</h2>
+        </div>
+        <div class="grid">
+            <a href="paginas/legiao.html" class="card">
+                <img src="imagens/legiaourbana.jpg" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-magic">Legião Urbana</h3>
+                    <p>“É preciso amar as pessoas como se não houvesse amanhã.”</p>
+                </div>
+            </a>
+            <a href="paginas/galcosta.html" class="card">
+                <img src="imagens/galcosta.jpg" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-pink">Gal Costa</h3>
+                    <p>“Palavras não podem dizer o que eu sinto.”</p>
+                </div>
+            </a>
+            <a href="paginas/musicais.html" class="card">
+                <img src="imagens/reidoshow.jpg" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-glam">O Rei do Show</h3>
+                    <p>“A arte mais nobre é fazer os outros felizes.”</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="category-header">
+            <h2>Além do Real</h2>
+        </div>
+        <div class="grid">
+            <a href="paginas/arcane.html" class="card">
+                <img src="imagens/arcane.jpg" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-arcane">Arcane</h3>
+                    <p>“Nunca deixaremos de ser irmãs.”</p>
+                </div>
+            </a>
+            <a href="paginas/hp.html" class="card">
+                <img src="imagens/harrypotter.jpg" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-magic">Harry Potter</h3>
+                    <p>“Inesgotável fonte de magia.”</p>
+                </div>
+            </a>
+            <a href="paginas/steven.html" class="card">
+                <img src="imagens/steven.jpg" class="card-img">
+                <div class="card-info">
+                    <h3 class="animated-title theme-pink">Steven Universo</h3>
+                    <p>“Você é o sentimento.”</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <footer>O UNIVERSO DE PALOMA • 2026</footer>
+
+    <script>
+        // --- CANVAS DE ESTRELAS ---
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        let mouseX = 0, mouseY = 0;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        }
+
+        window.addEventListener('resize', resize);
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) / 50;
+            mouseY = (e.clientY - window.innerHeight / 2) / 50;
+        });
+
+        function initStars() {
+            stars = [];
+            const count = window.innerWidth < 768 ? 80 : 180;
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: 0.1 + Math.random() * 0.4,
+                    parallaxMult: Math.random() * 2
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            stars.forEach(s => {
+                ctx.beginPath();
+                let px = s.x + (mouseX * s.parallaxMult);
+                let py = s.y + (mouseY * s.parallaxMult);
+                ctx.arc(px, py, s.size, 0, Math.PI * 2);
+                ctx.fill();
+                s.y -= s.speed;
+                if (s.y < -10) s.y = canvas.height + 10;
+            });
+            requestAnimationFrame(animate);
+        }
+
+        resize();
+        animate();
+
+        // --- BARRA DE PROGRESSO ---
+        window.addEventListener('scroll', () => {
+            const bar = document.getElementById('progress-bar');
+            const scroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            bar.style.width = (scroll / height) * 100 + "%";
+        });
+
+        // --- TILT 3D (DESATIVADO EM MOBILE PARA FLUIDEZ) ---
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+        if (!isTouch) {
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) - rect.width / 2;
+                    const y = (e.clientY - rect.top) - rect.height / 2;
+                    card.style.transform = `perspective(1000px) rotateX(${-y / 20}deg) rotateY(${x / 20}deg) translateY(-10px)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateY(0)`;
+                });
+            });
+        }
+
+        // --- REVELAÇÃO AO ROLAR ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, { threshold: 0.05 });
+
+        document.querySelectorAll('.card, .category-header').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(30px)";
+            el.style.transition = "all 0.8s ease-out";
+            observer.observe(el);
+        });
+
+        // --- TRANSIÇÕES DE PÁGINA ---
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (!href || href.startsWith('#') || (this.hostname && this.hostname !== window.location.hostname)) return;
+
+                e.preventDefault();
+                const dest = this.href;
+                document.getElementById('main-container').classList.add('fade-out');
+                document.getElementById('main-header').classList.add('fade-out');
+                const overlay = document.getElementById('overlay');
+                overlay.style.opacity = "1";
+                overlay.style.pointerEvents = "all";
+                setTimeout(() => { window.location.href = dest; }, 600);
+            });
+        });
+    </script>
+</body>
+
+</html>

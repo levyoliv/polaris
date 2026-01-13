@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Rainha do Show | Paloma</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@1,900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --show-gold: #ffd700;
+            --show-red: #b30000;
+            --show-dark: #050000;
+            --velvet: #660000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--show-dark);
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Spotlight dinâmico */
+        #spotlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.85) 60%);
+            z-index: 5;
+            transition: background 0.1s ease;
+        }
+
+        /* Cortinas Responsivas */
+        .curtain {
+            position: fixed;
+            top: 0;
+            width: 10%;
+            /* Reduzido no mobile */
+            height: 100%;
+            background: linear-gradient(to right, #200000, var(--velvet), #200000);
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            display: none;
+            /* Escondido em telas muito pequenas */
+        }
+
+        @media (min-width: 600px) {
+            .curtain {
+                display: block;
+                width: 12%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .curtain {
+                width: 15%;
+            }
+        }
+
+        .curtain.left {
+            left: 0;
+            border-right: 2px solid var(--show-gold);
+        }
+
+        .curtain.right {
+            right: 0;
+            border-left: 2px solid var(--show-gold);
+        }
+
+        .curtain::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(to right, transparent, rgba(0, 0, 0, 0.3) 20%, transparent 40%);
+        }
+
+        #circus-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle, #300000 0%, var(--show-dark) 100%);
+        }
+
+        .sparkle {
+            position: absolute;
+            background: var(--show-gold);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(1px);
+        }
+
+        /* Navegação com Scroll Dinâmico */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--show-gold);
+            text-decoration: none;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            z-index: 20;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .back-btn.scrolled {
+            transform: translateY(-80px);
+            opacity: 0;
+        }
+
+        @media (min-width: 768px) {
+            .back-btn {
+                top: 30px;
+                left: 18%;
+            }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 10px;
+            position: relative;
+            z-index: 6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 10vw, 4.5rem);
+            color: var(--show-gold);
+            text-transform: uppercase;
+            letter-spacing: clamp(4px, 2vw, 10px);
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .stars-tag {
+            color: var(--show-gold);
+            letter-spacing: 4px;
+            font-weight: bold;
+            font-size: 0.65rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        @media (min-width: 768px) {
+            .stars-tag {
+                font-size: 0.8rem;
+                letter-spacing: 8px;
+            }
+        }
+
+        /* Show Card */
+        .show-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 40px 20px;
+            position: relative;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .show-card {
+                padding: 60px 40px;
+            }
+        }
+
+        .letter-text p {
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            margin-bottom: 20px;
+        }
+
+        .lyric-highlight {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(1.3rem, 6vw, 1.8rem);
+            color: var(--show-gold);
+            margin: 30px 0;
+            display: block;
+            line-height: 1.3;
+        }
+
+        .lyric-highlight span {
+            color: var(--show-red);
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            margin-top: 10px;
+            font-style: normal;
+        }
+
+        .gold-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: transparent;
+            color: var(--show-gold);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            letter-spacing: 2px;
+            border: 1px solid var(--show-gold);
+            cursor: pointer;
+            transition: 0.4s;
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 768px) {
+            .gold-button {
+                padding: 15px 45px;
+                font-size: 1rem;
+            }
+        }
+
+        .gold-button:active {
+            transform: scale(0.95);
+            background: var(--show-gold);
+            color: var(--show-dark);
+        }
+
+        #bday-wish {
+            font-family: 'Cinzel';
+            font-size: clamp(1.3rem, 7vw, 1.8rem);
+            color: var(--show-gold);
+            margin-top: 30px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-bottom: 20px;
+            opacity: 0.4;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--show-gold);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="spotlight"></div>
+    <div id="circus-bg"></div>
+
+    <div class="curtain left"></div>
+    <div class="curtain right"></div>
+
+    <a href="../index.html" class="back-btn" id="backBtn">← Voltar</a>
+
+    <div class="container">
+        <header>
+            <h1>A Rainha do Show</h1>
+            <p class="stars-tag">ESTRELANDO: PALOMA</p>
+        </header>
+
+        <main class="show-card">
+            <div class="letter-text">
+                <p>Paloma, hoje as cortinas se abrem para celebrar a pessoa incrível que você é. Que este novo ano seja
+                    o seu espetáculo mais bonito, onde você é a única protagonista.</p>
+
+                <span class="lyric-highlight">
+                    "I am brave, I am bruised<br>I am who I'm meant to be..."
+                    <span>This Is Me</span>
+                </span>
+
+                <p>Nunca deixe que as luzes do mundo apaguem o seu brilho. Como diz a música, não tenha medo de ser
+                    vista, não peça desculpas por ocupar o seu lugar. Você é gloriosa!</p>
+
+                <span class="lyric-highlight">
+                    "A million dreams for the world we're gonna make"
+                </span>
+
+                <p>Que você continue sonhando um milhão de sonhos e transformando cada um deles em realidade. O palco da
+                    vida é seu!</p>
+
+                <p id="bday-wish">BRILHE, PALOMA!</p>
+
+                <div class="gold-button" id="mainAction">FELIZ ANIVERSÁRIO</div>
+            </div>
+        </main>
+
+        <footer>O UNIVERSO DA PALOMA • 2026</footer>
+    </div>
+
+    <script>
+        const spotlight = document.getElementById('spotlight');
+        const mainAction = document.getElementById('mainAction');
+        const bdayWish = document.getElementById('bday-wish');
+        const backBtn = document.getElementById('backBtn');
+
+        // --- SCROLL DINÂMICO ---
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                backBtn.classList.add('scrolled');
+            } else {
+                backBtn.classList.remove('scrolled');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        // Spotlight suave que funciona em Mobile e Desktop
+        function moveSpotlight(e) {
+            let x, y;
+            if (e.type === 'mousemove') {
+                x = (e.clientX / window.innerWidth) * 100;
+                y = (e.clientY / window.innerHeight) * 100;
+            } else if (e.type === 'touchmove') {
+                x = (e.touches[0].clientX / window.innerWidth) * 100;
+                y = (e.touches[0].clientY / window.innerHeight) * 100;
+            }
+            if (x && y) {
+                spotlight.style.background = `radial-gradient(circle at ${x}% ${y}%, transparent 0%, rgba(0,0,0,0.85) 45%)`;
+            }
+        }
+
+        document.addEventListener('mousemove', moveSpotlight);
+        document.addEventListener('touchmove', moveSpotlight);
+
+        // Partículas Bokeh (limitadas no mobile)
+        const sparkleLimit = window.innerWidth < 768 ? 400 : 200;
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            const size = Math.random() * 6 + 3 + 'px';
+            sparkle.className = 'sparkle';
+            sparkle.style.width = size;
+            sparkle.style.height = size;
+            sparkle.style.left = (Math.random() * 80 + 10) + 'vw';
+            sparkle.style.top = '-10px';
+            sparkle.style.opacity = Math.random() * 0.5;
+
+            document.body.appendChild(sparkle);
+
+            sparkle.animate([
+                { transform: 'translateY(0)', opacity: 0 },
+                { transform: 'translateY(50vh)', opacity: 0.6, offset: 0.5 },
+                { transform: 'translateY(100vh)', opacity: 0 }
+            ], {
+                duration: Math.random() * 3000 + 4000,
+                easing: 'linear'
+            }).onfinish = () => sparkle.remove();
+        }
+        setInterval(createSparkle, sparkleLimit);
+
+        // Ação de Aniversário
+        mainAction.addEventListener('click', (e) => {
+            const rect = mainAction.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+
+            bdayWish.innerText = "O SHOW É SEU, PALOMA!";
+            bdayWish.style.color = "#fff";
+
+            for (let i = 0; i < 30; i++) {
+                createFirework(x, y);
+            }
+        });
+
+        function createFirework(x, y) {
+            const firework = document.createElement('div');
+            firework.className = 'sparkle';
+            firework.style.left = x + 'px';
+            firework.style.top = y + 'px';
+            firework.style.width = '4px';
+            firework.style.height = '4px';
+            firework.style.opacity = '1';
+            firework.style.background = 'var(--show-gold)';
+            document.body.appendChild(firework);
+
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 100 + 50;
+            const destX = Math.cos(angle) * velocity;
+            const destY = Math.sin(angle) * velocity;
+
+            firework.animate([
+                { transform: 'translate(0, 0)', opacity: 1 },
+                { transform: `translate(${destX}px, ${destY}px)`, opacity: 0 }
+            ], {
+                duration: 800,
+                easing: 'ease-out'
+            }).onfinish = () => firework.remove();
+        }
+    </script>
+</body>
+
+</html>

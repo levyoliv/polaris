@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Estrela Perdida</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #060309;
+            --accent: #d4a5ff;
+            --text-main: #fff0f5;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #060309 100%);
+        }
+
+        .error-code {
+            font-family: 'Dancing Script', cursive;
+            font-size: 8rem;
+            margin: 0;
+            background: linear-gradient(to bottom, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(212, 165, 255, 0.5));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            margin-top: -20px;
+            opacity: 0.8;
+        }
+
+        p {
+            max-width: 400px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 20px 0 40px;
+            line-height: 1.8;
+        }
+
+        .back-home {
+            text-decoration: none;
+            color: var(--text-main);
+            border: 1px solid var(--accent);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-home:hover {
+            background: var(--accent);
+            color: var(--bg-main);
+            box-shadow: 0 0 30px var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Estrela Solitária Animada */
+        .lost-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px white;
+            animation: blink 2s infinite alternate;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="lost-star" style="top: 20%; left: 30%;"></div>
+    <div class="lost-star" style="top: 70%; left: 80%;"></div>
+    <div class="lost-star" style="top: 40%; left: 10%;"></div>
+
+    <p class="error-code">404</p>
+    <h1>Coordenada Perdida</h1>
+    <p>Parece que você navegou para além das fronteiras da Polaris. Esta parte do universo ainda está sendo mapeada ou
+        deixou de existir.</p>
+
+    <a href="../index.html" class="back-home">Voltar para a Constelação</a>
+
+</body>
+
+</html>

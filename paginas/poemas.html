@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Poemas & Contos | Paloma</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Poppins:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-paper: #0c0908;
+            --ink: #e8d5bc;
+            --gold-dim: #9b7e4b;
+            --glass: rgba(232, 213, 188, 0.03);
+            --border: rgba(155, 126, 75, 0.3);
+            --wax-red: #6b1d1d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'EB Garamond', serif;
+            background-color: var(--bg-paper);
+            color: var(--ink);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        #bg-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1a1410 0%, #0c0908 100%);
+        }
+
+        /* Penas e Partículas */
+        .feather {
+            position: absolute;
+            background: var(--ink);
+            clip-path: ellipse(20% 50% at 50% 50%);
+            opacity: 0.1;
+            filter: blur(1px);
+            animation: drift-ink 15s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes drift-ink {
+            0% {
+                transform: translateY(110vh) rotate(0deg) translateX(0);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.15;
+                transform: translateY(50vh) rotate(180deg) translateX(30px);
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(360deg) translateX(-30px);
+                opacity: 0;
+            }
+        }
+
+        /* BOTÃO VOLTAR (DINÂMICO) */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--gold-dim);
+            text-decoration: none;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            padding: 5px;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+            z-index: 1000;
+            background: rgba(12, 9, 8, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Estado oculto - Desliza para a esquerda como se saísse da margem */
+        .back-btn.hidden {
+            transform: translateX(-120%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .back-btn {
+                top: 30px;
+                left: 30px;
+                font-size: 0.7rem;
+                letter-spacing: 4px;
+            }
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .main-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2.2rem, 10vw, 4rem);
+            color: var(--gold-dim);
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+            margin: 15px auto;
+        }
+
+        .poem-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 40px 20px;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 20px 40px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        @media (min-width: 768px) {
+            .poem-card {
+                padding: 80px 40px;
+            }
+        }
+
+        .poem-content {
+            font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+            text-align: center;
+            font-style: italic;
+            color: var(--ink);
+            white-space: pre-line;
+        }
+
+        .strophe {
+            margin-bottom: 30px;
+            display: block;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: revealText 1.5s forwards;
+        }
+
+        @keyframes revealText {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .wax-seal {
+            width: 65px;
+            height: 65px;
+            background: var(--wax-red);
+            border-radius: 50%;
+            margin: 30px auto 15px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5), inset 0 0 8px rgba(0, 0, 0, 0.5);
+            border: 2px solid #5a1818;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .wax-seal i {
+            font-family: 'EB Garamond', serif;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        .dedicatoria {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(0.6rem, 3vw, 0.75rem);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-dim);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 20px;
+            opacity: 0.2;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="bg-effect"></div>
+
+    <a href="../index.html" class="back-btn" id="backBtn">← Sumário</a>
+
+    <div class="container">
+        <header>
+            <h1 class="main-title">Versos de Outono</h1>
+            <div class="divider"></div>
+            <p style="letter-spacing: 3px; font-size: 0.6rem; opacity: 0.5; color: var(--gold-dim);">MANUSCRITO ORIGINAL
+            </p>
+        </header>
+
+        <main class="poem-card">
+            <div class="poem-content">
+                <span class="strophe" style="animation-delay: 0.5s;">
+                    Há quem busque a poesia nos livros,
+                    Em estantes empoeiradas pelo chão.
+                    Mas eu li o verso mais bonito,
+                    Nas linhas da palma da sua mão.
+                </span>
+
+                <span class="strophe" style="animation-delay: 1.5s;">
+                    Você é o conto que o tempo não apaga,
+                    A metáfora viva de um sol que insiste.
+                    A rima rara que a alma afaga,
+                    A prova de que a beleza ainda existe.
+                </span>
+
+                <span class="strophe" style="animation-delay: 2.5s;">
+                    Neste seu dia, <b>Paloma</b>, que a vida
+                    Seja o rascunho de um sonho sem fim.
+                    Cada capítulo uma nova acolhida,
+                    Com a paz de um verso e o aroma de um jardim.
+                </span>
+
+                <span class="strophe" style="animation-delay: 3.5s;">
+                    Não conte os anos por números frios,
+                    Mas pelas histórias que transbordam o peito.
+                    Pois você é o mar que recebe os meus rios,
+                    A poesia exata, do seu próprio jeito.
+                </span>
+            </div>
+
+            <div class="wax-seal" title="Para Paloma">
+                <i>P</i>
+            </div>
+            <div class="dedicatoria">Feliz Aniversário, Minha Poesia Viva</div>
+        </main>
+
+        <footer>O UNIVERSO DA PALOMA • 2026</footer>
+    </div>
+
+    <script>
+        // --- SCROLL DINÂMICO ---
+        const backBtn = document.getElementById('backBtn');
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Se rolar para baixo, o botão desliza para fora da tela (esquerda)
+            if (scrollTop > lastScrollTop && scrollTop > 40) {
+                backBtn.classList.add('hidden');
+            } else {
+                backBtn.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        // --- EFEITOS DE PENAS ---
+        const bg = document.getElementById('bg-effect');
+        const featherCount = window.innerWidth < 768 ? 10 : 20;
+
+        for (let i = 0; i < featherCount; i++) {
+            const feather = document.createElement('div');
+            feather.className = 'feather';
+            feather.style.width = Math.random() * 3 + 2 + 'px';
+            feather.style.height = Math.random() * 15 + 10 + 'px';
+            feather.style.left = Math.random() * 100 + 'vw';
+            feather.style.top = Math.random() * 100 + 'vh';
+            feather.style.animationDuration = (Math.random() * 8 + 12) + 's';
+            feather.style.animationDelay = (Math.random() * 10) + 's';
+            bg.appendChild(feather);
+        }
+
+        // --- INTERAÇÃO SELO DE CERA ---
+        const waxSeal = document.querySelector('.wax-seal');
+        waxSeal.addEventListener('click', function (e) {
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => this.style.transform = 'scale(1.05)', 100);
+
+            const x = e.clientX || (e.touches && e.touches[0].clientX);
+            const y = e.clientY || (e.touches && e.touches[0].clientY);
+
+            for (let i = 0; i < 12; i++) createParticle(x, y);
+            createFloatingText(x, y);
+        });
+
+        function createParticle(x, y) {
+            const p = document.createElement('div');
+            p.style.position = 'fixed';
+            p.style.left = x + 'px';
+            p.style.top = y + 'px';
+            p.style.width = Math.random() * 8 + 4 + 'px';
+            p.style.height = p.style.width;
+            const colors = ['#9b7e4b', '#6b1d1d', '#e8d5bc'];
+            p.style.background = colors[Math.floor(Math.random() * colors.length)];
+            p.style.borderRadius = '50% 0 50% 0';
+            p.style.pointerEvents = 'none';
+            p.style.zIndex = '1000';
+            document.body.appendChild(p);
+
+            const destinationX = (Math.random() - 0.5) * 200;
+            const destinationY = (Math.random() - 0.5) * 200;
+
+            p.animate([
+                { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+                { transform: `translate(${destinationX}px, ${destinationY}px) rotate(360deg)`, opacity: 0 }
+            ], { duration: 1000 + Math.random() * 800, easing: 'ease-out' }).onfinish = () => p.remove();
+        }
+
+        function createFloatingText(x, y) {
+            const text = document.createElement('div');
+            text.innerText = "Com amor, Levy.";
+            text.style.position = 'fixed';
+            text.style.left = (x - 50) + 'px';
+            text.style.top = (y - 40) + 'px';
+            text.style.color = '#e8d5bc';
+            text.style.fontFamily = 'Dancing Script';
+            text.style.fontSize = '1.1rem';
+            text.style.pointerEvents = 'none';
+            text.style.zIndex = '1001';
+            document.body.appendChild(text);
+
+            text.animate([
+                { transform: 'translateY(0)', opacity: 1 },
+                { transform: 'translateY(-40px)', opacity: 0 }
+            ], { duration: 2000 }).onfinish = () => text.remove();
+        }
+    </script>
+</body>
+
+</html>

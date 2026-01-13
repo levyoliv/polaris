@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Evelyn Hugo | Paloma</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #040d0a;
+            --emerald: #50c878;
+            --gold: #d4af37;
+            --text-main: #f8fcfb;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(80, 200, 120, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: default;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        #bg-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 10%, #0a241a 0%, #040d0a 100%);
+        }
+
+        /* Partículas de brilho */
+        .sparkle {
+            position: absolute;
+            background: var(--gold);
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: twinkle 5s infinite ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+        }
+
+        /* BOTÃO VOLTAR (DINÂMICO) */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Classe para esconder o botão no scroll */
+        .back-btn.hidden {
+            transform: translateY(-80px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .back-btn {
+                top: 30px;
+                left: 30px;
+                font-size: 0.7rem;
+                letter-spacing: 3px;
+                padding: 12px 25px;
+            }
+        }
+
+        .back-btn:hover {
+            background: var(--gold);
+            color: #000;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 80px auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                margin: 100px auto;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .pre-title {
+            font-size: 0.6rem;
+            letter-spacing: 6px;
+            color: var(--emerald);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+            animation: fadeInDown 1s ease;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 10vw, 4.5rem);
+            color: var(--gold);
+            font-style: italic;
+            position: relative;
+            display: inline-block;
+            transition: 0.5s;
+            line-height: 1.2;
+        }
+
+        /* CARD */
+        .birthday-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 0px 30px 0px 30px;
+            padding: 50px 25px;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+            transition: 0.5s;
+        }
+
+        @media (min-width: 768px) {
+            .birthday-card {
+                border-radius: 0px 40px 0px 40px;
+                padding: 70px 50px;
+            }
+        }
+
+        .quote {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.8rem, 6vw, 2.8rem);
+            color: var(--emerald);
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .text-body {
+            font-size: clamp(1rem, 4vw, 1.15rem);
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .text-body b {
+            color: var(--gold);
+        }
+
+        /* TAGS */
+        .tag-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+            transition: 0.5s;
+        }
+
+        .tag {
+            font-size: 0.55rem;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 6px 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 2px;
+        }
+
+        /* REVEAL */
+        .bday-reveal {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 0 10px;
+        }
+
+        .bday-reveal.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bday-reveal h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+
+        footer {
+            text-align: center;
+            margin: 60px 0 30px;
+            opacity: 0.3;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .diamond {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--gold);
+            pointer-events: none;
+            z-index: 2000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="bg-effect"></div>
+
+    <a href="../index.html" class="back-btn" id="backBtn">← Início</a>
+
+    <div class="container">
+        <header>
+            <span class="pre-title">A única e inesquecível</span>
+            <h1 class="main-title">Evelyn Hugo</h1>
+        </header>
+
+        <main class="birthday-card" id="card">
+            <p class="quote">"Porque você é a estrela, Paloma."</p>
+
+            <div class="text-body">
+                <p>Evelyn Hugo sabia que o mundo não te dá nada de graça, você tem que tomar para si. E ao te olhar,
+                    Paloma, vejo essa mesma determinação de quem não aceita ser apenas uma coadjuvante na vida.</p>
+
+                <p>Neste aniversário, celebramos não apenas mais um ano, mas a trajetória de uma mulher que, assim como
+                    a Evelyn, entende que a sua própria verdade é o prêmio mais valioso.</p>
+
+                <p>Eles podem até tentar olhar, mas você é a única que brilha sob os holofotes do seu próprio destino.
+                    <b>Feliz Aniversário à nossa protagonista favorita!</b>
+                </p>
+            </div>
+
+            <div class="tag-row" id="tagRow">
+                <div class="tag">Ícone</div>
+                <div class="tag">Protagonista</div>
+                <div class="tag">Inesquecível</div>
+            </div>
+
+            <div class="bday-reveal" id="bdayReveal">
+                <h3>PARABÉNS, PALOMA! ✨</h3>
+                <p style="font-size: 0.5rem; letter-spacing: 3px; color: var(--emerald); text-transform: uppercase;">
+                    A NOITE É TODA SUA
+                </p>
+            </div>
+        </main>
+
+        <footer>O UNIVERSO DA PALOMA • 2026</footer>
+    </div>
+
+    <script>
+        // --- LOGICA DO SCROLL DINÂMICO ---
+        const backBtn = document.getElementById('backBtn');
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', function () {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Se rolar para baixo e passar de 50px, esconde. Se rolar para cima, mostra.
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                backBtn.classList.add('hidden');
+            } else {
+                backBtn.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, false);
+
+        // Criar estrelas de fundo
+        const bg = document.getElementById('bg-effect');
+        const starCount = window.innerWidth < 768 ? 30 : 60;
+        for (let i = 0; i < starCount; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            const size = Math.random() * 3 + 1 + 'px';
+            sparkle.style.width = size;
+            sparkle.style.height = size;
+            sparkle.style.left = Math.random() * 100 + 'vw';
+            sparkle.style.top = Math.random() * 100 + 'vh';
+            sparkle.style.animationDelay = (Math.random() * 5) + 's';
+            bg.appendChild(sparkle);
+        }
+
+        // Lógica de Interação (Clique/Toque no Card)
+        const card = document.getElementById('card');
+        const tagRow = document.getElementById('tagRow');
+        const bdayReveal = document.getElementById('bdayReveal');
+
+        card.addEventListener('click', (e) => {
+            const x = e.clientX || (e.touches && e.touches[0].clientX) || window.innerWidth / 2;
+            const y = e.clientY || (e.touches && e.touches[0].clientY) || window.innerHeight / 2;
+
+            tagRow.style.opacity = '0';
+            bdayReveal.classList.add('show');
+
+            const diamondCount = window.innerWidth < 768 ? 20 : 40;
+            for (let i = 0; i < diamondCount; i++) {
+                createDiamond(x, y);
+            }
+        });
+
+        function createDiamond(x, y) {
+            const diamond = document.createElement('div');
+            diamond.className = 'diamond';
+            diamond.style.left = x + 'px';
+            diamond.style.top = y + 'px';
+            document.body.appendChild(diamond);
+
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * (window.innerWidth < 768 ? 120 : 200) + 50;
+            const destX = Math.cos(angle) * velocity;
+            const destY = Math.sin(angle) * velocity;
+
+            diamond.animate([
+                { transform: 'translate(0, 0) rotate(0deg) scale(1)', opacity: 1 },
+                { transform: `translate(${destX}px, ${destY}px) rotate(360deg) scale(0)`, opacity: 0 }
+            ], {
+                duration: 1200 + Math.random() * 800,
+                easing: 'cubic-bezier(0, .9, .5, 1)'
+            }).onfinish = () => diamond.remove();
+        }
+    </script>
+</body>
+
+</html>

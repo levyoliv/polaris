@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tudo é Rio | Paloma</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #020812;
+            --water-light: #4facfe;
+            --water-dark: #00f2fe;
+            --text-main: #e0f2f1;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(79, 172, 254, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: default;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        #bg-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0a192f 0%, #020812 100%);
+            overflow: hidden;
+        }
+
+        .wave-bg {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.03) 0%, transparent 60%);
+            top: -50%;
+            left: -50%;
+            animation: drift 20s infinite linear;
+        }
+
+        @keyframes drift {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* BOTÃO VOLTAR (DINÂMICO) */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--water-light);
+            text-decoration: none;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease, background 0.3s;
+            z-index: 1000;
+            background: rgba(2, 8, 18, 0.6);
+        }
+
+        /* Estado oculto ao rolar para baixo */
+        .back-btn.hidden {
+            transform: translateY(-80px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .back-btn {
+                top: 30px;
+                left: 30px;
+                font-size: 0.7rem;
+                letter-spacing: 3px;
+                padding: 12px 25px;
+            }
+        }
+
+        .back-btn:hover {
+            background: var(--water-light);
+            color: #020812;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 80px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .pre-title {
+            font-size: 0.6rem;
+            letter-spacing: 5px;
+            color: var(--water-dark);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+            opacity: 0.6;
+        }
+
+        .main-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 12vw, 5.5rem);
+            font-style: italic;
+            background: linear-gradient(90deg, #fff, var(--water-light), #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: wave-text 6s ease-in-out infinite;
+            line-height: 1.1;
+        }
+
+        @keyframes wave-text {
+
+            0%,
+            100% {
+                background-position: 0% center;
+            }
+
+            50% {
+                background-position: 100% center;
+            }
+        }
+
+        .birthday-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 40px 10px 40px 10px;
+            padding: 50px 25px;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            position: relative;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+            transition: 0.5s ease;
+            overflow: hidden;
+        }
+
+        .quote {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.6rem, 7vw, 2.4rem);
+            color: var(--water-light);
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .text-body {
+            font-size: clamp(1rem, 4vw, 1.15rem);
+            line-height: 1.8;
+            color: rgba(224, 242, 241, 0.85);
+            text-align: center;
+            z-index: 5;
+        }
+
+        .text-body b {
+            color: #fff;
+            text-shadow: 0 0 15px rgba(79, 172, 254, 0.6);
+        }
+
+        .river-line {
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--water-light), transparent);
+            margin: 30px auto;
+        }
+
+        .bday-tag {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.8;
+        }
+
+        .bday-tag span {
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--water-dark);
+        }
+
+        .bday-tag h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.4rem, 6vw, 1.8rem);
+            font-style: italic;
+            color: #fff;
+            text-shadow: 0 0 10px var(--water-light);
+            text-align: center;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rise 4s ease-in forwards;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(100%) scale(0.5);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(-400%) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .ripple {
+            position: absolute;
+            border: 1.5px solid rgba(79, 172, 254, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: ripple-effect 2.5s ease-out forwards;
+            z-index: 1;
+        }
+
+        @keyframes ripple-effect {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+
+            100% {
+                width: clamp(200px, 80vw, 400px);
+                height: clamp(200px, 80vw, 400px);
+                opacity: 0;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin: 60px 0 30px;
+            opacity: 0.3;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="bg-effect">
+        <div class="wave-bg"></div>
+    </div>
+
+    <a href="../index.html" class="back-btn" id="backBtn">← Voltar</a>
+
+    <div class="container">
+        <header>
+            <span class="pre-title">Para Paloma, onde</span>
+            <h1 class="main-title">Tudo é Rio</h1>
+        </header>
+
+        <main class="birthday-card" id="card">
+            <p class="quote">"O amor não é o que se espera, é o que se transborda."</p>
+
+            <div class="text-body">
+                <p>Assim como as águas de Carla Madeira, a sua vida, Paloma, é um fluxo constante de intensidade. Você
+                    não é pessoa de águas rasas; você é <b>profundidade, correnteza e calmaria</b>, tudo ao mesmo tempo.
+                </p>
+
+                <div class="river-line"></div>
+
+                <p>Nesse seu novo ciclo, desejo que você continue tendo a coragem de ser rio. Que você contorne as
+                    pedras com a sabedoria que só você tem e que nunca tenha medo de transbordar o que há de mais bonito
+                    em você: <b>o seu afeto.</b></p>
+            </div>
+
+            <div class="bday-tag">
+                <span>Ciclo de Renovação</span>
+                <h2>Feliz Aniversário, Paloma</h2>
+            </div>
+        </main>
+
+        <footer>O UNIVERSO DE PALOMA • 2026</footer>
+    </div>
+
+    <script>
+        // --- SCROLL DINÂMICO ---
+        const backBtn = document.getElementById('backBtn');
+        let lastScrollTop = 0;
+
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
+                // Rolando para baixo
+                backBtn.classList.add('hidden');
+            } else {
+                // Rolando para cima
+                backBtn.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        const card = document.getElementById('card');
+
+        // Suporte para cliques e toques
+        const handleInteraction = (e) => {
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+            if (clientX && clientY) {
+                createRipple(clientX, clientY);
+
+                const rect = card.getBoundingClientRect();
+                if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
+                    const bubbleCount = window.innerWidth < 768 ? 4 : 8;
+                    for (let i = 0; i < bubbleCount; i++) {
+                        createBubble(clientX - rect.left, clientY - rect.top);
+                    }
+                }
+            }
+        };
+
+        document.addEventListener('click', handleInteraction);
+
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 2500);
+        }
+
+        function createBubble(x, y) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * (window.innerWidth < 768 ? 8 : 15) + 5 + 'px';
+            bubble.style.width = size;
+            bubble.style.height = size;
+            bubble.style.left = x + 'px';
+            bubble.style.top = y + 'px';
+            card.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 4000);
+        }
+
+        // Ondulações automáticas
+        setInterval(() => {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createRipple(x, y);
+        }, window.innerWidth < 768 ? 8000 : 5000);
+
+        // Efeito de brilho (Mouse)
+        if (window.matchMedia("(hover: hover)").matches) {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(79, 172, 254, 0.1) 0%, rgba(255, 255, 255, 0.03) 50%)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.background = 'var(--glass)';
+            });
+        }
+    </script>
+</body>
+
+</html>
